@@ -989,25 +989,6 @@ Try it out!"></textarea>
                         addNewPage();
                     }
                 }
-            }
-                                } else {
-                                    currentLine = testLine;
-                                }
-                            }
-                            if (currentLine) {
-                                pdf.text(currentLine, indentX, lineY);
-                                currentY = lineY + lineHeight;
-                            }
-                        }
-                    }
-
-                    if (currentY > pageHeight - marginBottom - footerH) {
-                        drawFooterAndPageNum();
-                        addNewPage();
-                        currentY = marginTop + headerH;
-                    }
-                }
-                drawFooterAndPageNum();
             } else {
                 // --- SLIDES MODE ---
                 const slides = Array.from(document.querySelectorAll('.slide'));
