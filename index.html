@@ -884,7 +884,7 @@ Try it out!"></textarea>
                     pdf.setFontSize(11);
                     pdf.setTextColor(100);
                     const footerX = { left: marginLeft, center: pageWidth / 2, right: pageWidth - marginRight };
-                    const effectiveY = marginBottom === 0 ? pageHeight - 8 : pageHeight - marginBottom + 4;
+                    const effectiveY = marginBottom === 0 ? pageHeight - 5 : pageHeight - marginBottom - 5;
                     pdf.text(document.getElementById('footer-text').value, footerX[appState.footerPos], effectiveY, { align: appState.footerPos });
                 }
 
@@ -895,7 +895,7 @@ Try it out!"></textarea>
                     const pageText = (paginationFormatInput.value || 'Page {page} of {total}')
                         .replace('{page}', currentPageNum)
                         .replace('{total}', totalPages);
-                    const effectiveY = marginBottom === 0 ? pageHeight - 8 : pageHeight - marginBottom + 4;
+                    const effectiveY = marginBottom === 0 ? pageHeight - 5 : pageHeight - marginBottom - 5;
                     pdf.text(pageText, pageWidth / 2, effectiveY, { align: 'center' });
                 }
             };
@@ -906,8 +906,8 @@ Try it out!"></textarea>
                 // Vector PDF generation with professional typesetting
                 const html = md.render(appState.markdown);
                 const lines = extractTextWithStyle(html);
-                const headerH = headerEnabled ? 15 : 0;
-                const footerH = footerEnabled ? 15 : 0;
+                const headerH = headerEnabled ? 10 : 0;
+                const footerH = footerEnabled ? 10 : 0;
                 const availableHeight = pageHeight - marginTop - marginBottom - headerH - footerH;
 
                 let currentY = marginTop + headerH;
@@ -915,18 +915,19 @@ Try it out!"></textarea>
 
                 for (const line of lines) {
                     const fontSize = line.style.fontSize || 12;
-                    const lineHeight = fontSize * 1.5;
-                    const indentX = marginLeft + (line.indent || 0) * 6; // 6mm per indent level for professional spacing
+                    const lineHeight = fontSize * 1.2;
+                    const indentX = marginLeft + (line.indent || 0) * 5; // 5mm per indent level
 
                     if (line.isBreak) {
-                        currentY += lineHeight;
+                        currentY += lineHeight * 0.5; // Less spacing for breaks
                     } else {
                         pdf.setFontSize(fontSize);
-                        let fontName = line.style.mono ? 'courier' : 'times';
+                        let fontName = 'helvetica'; // Reliable font
                         let fontStyle = 'normal';
                         if (line.style.bold && line.style.italic) fontStyle = 'bolditalic';
                         else if (line.style.bold) fontStyle = 'bold';
                         else if (line.style.italic) fontStyle = 'italic';
+                        if (line.style.mono) fontName = 'courier';
                         pdf.setFont(fontName, fontStyle);
 
                         if (line.style.mono) {
