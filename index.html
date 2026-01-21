@@ -901,69 +901,75 @@ Try it out!"></textarea>
             // --- RENDER LOGIC ---
 
             if (appState.mode === 'document') {
-                // Vector PDF generation for selectable text
-                const html = md.render(appState.markdown);
-                const lines = extractTextWithStyle(html);
-                console.log('Extracted lines:', lines);
+                // Raster PDF generation for accurate layout matching preview
+                const previewEl = document.getElementById('document-preview');
+
+                // Temporarily remove CSS padding so we don't get double margins
+                const originalPadding = previewEl.style.padding;
+                previewEl.style.padding = '0px';
+
+                const canvas = await html2canvas(previewEl, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    windowWidth: previewEl.scrollWidth,
+                    windowHeight: previewEl.scrollHeight
+                });
+
+                // Restore CSS padding immediately
+                previewEl.style.padding = originalPadding;
+
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = contentWidth;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                // Calculate height available for content
                 const headerH = headerEnabled ? 10 : 0;
                 const footerH = footerEnabled ? 10 : 0;
                 const availableHeight = pageHeight - marginTop - marginBottom - headerH - footerH;
 
-                let currentY = marginTop + headerH;
+                let remainingHeight = imgHeight;
+                let yOffset = 0;
+
                 addNewPage();
 
-                for (const line of lines) {
-                    const lineHeight = (line.style.fontSize || 12) * 0.6;
-                    const indentX = marginLeft + (line.indent || 0) * 10; // 10mm per indent level
+                while (remainingHeight > 0) {
+                    const heightForThisPage = Math.min(remainingHeight, availableHeight);
 
-                    if (line.isBreak) {
-                        currentY += lineHeight;
-                    } else {
-                        pdf.setFontSize(line.style.fontSize || 12);
-                        let fontStyle = 'normal';
-                        if (line.style.bold && line.style.italic) fontStyle = 'bolditalic';
-                        else if (line.style.bold) fontStyle = 'bold';
-                        else if (line.style.italic) fontStyle = 'italic';
-                        pdf.setFont(line.style.mono ? 'courier' : 'helvetica', fontStyle);
+                    const sourceY = (yOffset / imgHeight) * canvas.height;
+                    const sourceH = (heightForThisPage / imgHeight) * canvas.height;
 
-                        if (line.style.mono) {
-                            // For code blocks, don't wrap, place as is
-                            pdf.text(line.text, indentX, currentY);
-                            currentY += lineHeight;
-                        } else {
-                            // Simple word wrap
-                            const words = line.text.split(/\s+/);
-                            let currentLine = '';
-                            for (const word of words) {
-                                const testLine = currentLine + (currentLine ? ' ' : '') + word;
-                                const testWidth = pdf.getTextWidth(testLine);
-                                if (testWidth > contentWidth - (line.indent || 0) * 10 && currentLine) {
-                                    pdf.text(currentLine, indentX, currentY);
-                                    currentY += lineHeight;
-                                    currentLine = word;
-                                    if (currentY > pageHeight - marginBottom - footerH) {
-                                        drawFooterAndPageNum();
-                                        addNewPage();
-                                        currentY = marginTop + headerH;
-                                    }
-                                } else {
-                                    currentLine = testLine;
-                                }
-                            }
-                            if (currentLine) {
-                                pdf.text(currentLine, indentX, currentY);
-                                currentY += lineHeight;
-                            }
-                        }
-                    }
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = canvas.width;
+                    tempCanvas.height = sourceH;
+                    const tempCtx = tempCanvas.getContext('2d');
 
-                    if (currentY > pageHeight - marginBottom - footerH) {
-                        drawFooterAndPageNum();
+                    tempCtx.drawImage(
+                        canvas,
+                        0, sourceY, canvas.width, sourceH,
+                        0, 0, canvas.width, sourceH
+                    );
+
+                    const pageImgData = tempCanvas.toDataURL('image/png');
+                    const contentStartY = marginTop + headerH;
+
+                    pdf.addImage(
+                        pageImgData, 'PNG',
+                        marginLeft, contentStartY,
+                        imgWidth, heightForThisPage,
+                        undefined, 'FAST'
+                    );
+
+                    drawFooterAndPageNum();
+
+                    remainingHeight -= heightForThisPage;
+                    yOffset += heightForThisPage;
+
+                    if (remainingHeight > 0) {
                         addNewPage();
-                        currentY = marginTop + headerH;
                     }
                 }
-                drawFooterAndPageNum();
             } else {
                 // --- SLIDES MODE ---
                 const slides = Array.from(document.querySelectorAll('.slide'));
