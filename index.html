@@ -268,13 +268,11 @@
 
         .slide {
             background: white;
-            border: 1px solid #bdc3c7;
-            border-radius: 4px;
-            padding: 30px;
-            margin-bottom: 20px;
-            min-height: 400px;
+            padding: 20px;
+            margin-bottom: 10px;
+            min-height: 300px;
+            page-break-before: always;
             page-break-inside: avoid;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .slide:last-child {
@@ -283,15 +281,23 @@
 
         #document-preview {
             background: white;
-            padding: 30px;
+            padding: 20px;
+        }
+
+        .preview-content {
+            font-family: 'Times New Roman', serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #000;
         }
 
         .preview-content h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            margin-top: 24px;
-            color: #2c3e50;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            margin-top: 18px;
+            color: #000;
+            page-break-after: avoid;
         }
 
         .preview-content h1:first-child {
@@ -299,100 +305,111 @@
         }
 
         .preview-content h2 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            margin-top: 20px;
-            color: #34495e;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            margin-top: 15px;
+            color: #000;
+            page-break-after: avoid;
         }
 
         .preview-content h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            margin-top: 16px;
-            color: #34495e;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            margin-top: 12px;
+            color: #000;
+            page-break-after: avoid;
         }
 
         .preview-content h4,
         .preview-content h5,
         .preview-content h6 {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            margin-top: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            margin-top: 10px;
+            color: #000;
+            page-break-after: avoid;
         }
 
         .preview-content p {
-            margin-bottom: 12px;
-            line-height: 1.6;
-            color: #555;
+            margin-bottom: 8px;
+            color: #000;
+            text-align: justify;
+            page-break-inside: avoid;
         }
 
         .preview-content ul,
         .preview-content ol {
-            margin-left: 24px;
-            margin-bottom: 12px;
+            margin-left: 18px;
+            margin-bottom: 8px;
         }
 
         .preview-content li {
-            margin-bottom: 6px;
-            line-height: 1.5;
-            color: #555;
+            margin-bottom: 4px;
+            color: #000;
+            page-break-inside: avoid;
         }
 
         .preview-content code {
-            background: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 12px;
-            color: #d63384;
+            background: #f0f0f0;
+            padding: 1px 3px;
+            border-radius: 2px;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: #000;
         }
 
         .preview-content pre {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 12px;
-            border-radius: 4px;
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            color: #000;
+            padding: 8px;
+            border-radius: 3px;
             overflow-x: auto;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             line-height: 1.4;
+            page-break-inside: avoid;
         }
 
         .preview-content pre code {
             background: none;
             color: inherit;
             padding: 0;
+            font-size: 10px;
         }
 
         .preview-content blockquote {
-            border-left: 4px solid #3498db;
-            padding-left: 12px;
+            border-left: 3px solid #ccc;
+            padding-left: 10px;
             margin-left: 0;
-            margin-bottom: 12px;
-            color: #7f8c8d;
+            margin-bottom: 8px;
+            color: #666;
             font-style: italic;
+            page-break-inside: avoid;
         }
 
         .preview-content table {
             border-collapse: collapse;
             width: 100%;
-            margin-bottom: 12px;
-            border: 1px solid #bdc3c7;
+            margin-bottom: 8px;
+            border: 1px solid #000;
+            page-break-inside: avoid;
         }
 
         .preview-content table th,
         .preview-content table td {
-            border: 1px solid #bdc3c7;
-            padding: 8px 12px;
+            border: 1px solid #000;
+            padding: 4px 6px;
             text-align: left;
+            font-size: 11px;
         }
 
         .preview-content table th {
-            background: #ecf0f1;
-            font-weight: 600;
-            color: #2c3e50;
+            background: #f0f0f0;
+            font-weight: bold;
+            color: #000;
         }
 
         .preview-content a {
@@ -903,58 +920,76 @@ Try it out!"></textarea>
             // --- RENDER LOGIC ---
 
             if (appState.mode === 'document') {
-                // Vector PDF generation with professional typesetting
-                const html = md.render(appState.markdown);
-                const lines = extractTextWithStyle(html);
+                // Raster PDF generation with professional HTML styling
+                const previewEl = document.getElementById('document-preview');
+
+                // Temporarily adjust styling for PDF capture
+                const originalFontSize = previewEl.style.fontSize;
+                previewEl.style.fontSize = '12px'; // Ensure consistent sizing
+
+                const canvas = await html2canvas(previewEl, {
+                    scale: 1.5, // Reduced scale for better text proportion
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    windowWidth: previewEl.scrollWidth,
+                    windowHeight: previewEl.scrollHeight
+                });
+
+                // Restore styling
+                previewEl.style.fontSize = originalFontSize;
+
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = contentWidth;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                // Calculate height available for content
                 const headerH = headerEnabled ? 10 : 0;
                 const footerH = footerEnabled ? 10 : 0;
                 const availableHeight = pageHeight - marginTop - marginBottom - headerH - footerH;
 
-                let currentY = marginTop + headerH;
+                let remainingHeight = imgHeight;
+                let yOffset = 0;
+
                 addNewPage();
 
-                for (const line of lines) {
-                    const fontSize = line.style.fontSize || 12;
-                    const lineHeight = fontSize * 1.2;
-                    const indentX = marginLeft + (line.indent || 0) * 5; // 5mm per indent level
+                while (remainingHeight > 0) {
+                    const heightForThisPage = Math.min(remainingHeight, availableHeight);
 
-                    if (line.isBreak) {
-                        currentY += lineHeight * 0.5; // Less spacing for breaks
-                    } else {
-                        pdf.setFontSize(fontSize);
-                        let fontName = 'helvetica'; // Reliable font
-                        let fontStyle = 'normal';
-                        if (line.style.bold && line.style.italic) fontStyle = 'bolditalic';
-                        else if (line.style.bold) fontStyle = 'bold';
-                        else if (line.style.italic) fontStyle = 'italic';
-                        if (line.style.mono) fontName = 'courier';
-                        pdf.setFont(fontName, fontStyle);
+                    const sourceY = (yOffset / imgHeight) * canvas.height;
+                    const sourceH = (heightForThisPage / imgHeight) * canvas.height;
 
-                        if (line.style.mono) {
-                            // Code blocks with background
-                            const textWidth = pdf.getTextWidth(line.text);
-                            pdf.setFillColor(245, 245, 245);
-                            pdf.rect(indentX - 2, currentY - fontSize * 0.8, textWidth + 4, fontSize * 1.2, 'F');
-                            pdf.setTextColor(0, 0, 0);
-                            pdf.text(line.text, indentX, currentY);
-                            currentY += lineHeight;
-                        } else {
-                            // Word wrap for regular text
-                            const words = line.text.split(/\s+/);
-                            let currentLine = '';
-                            let lineY = currentY;
-                            for (const word of words) {
-                                const testLine = currentLine + (currentLine ? ' ' : '') + word;
-                                const testWidth = pdf.getTextWidth(testLine);
-                                if (testWidth > contentWidth - (line.indent || 0) * 6 && currentLine) {
-                                    pdf.text(currentLine, indentX, lineY);
-                                    lineY += lineHeight;
-                                    currentLine = word;
-                                    if (lineY + lineHeight > pageHeight - marginBottom - footerH) {
-                                        drawFooterAndPageNum();
-                                        addNewPage();
-                                        lineY = marginTop + headerH;
-                                    }
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = canvas.width;
+                    tempCanvas.height = sourceH;
+                    const tempCtx = tempCanvas.getContext('2d');
+
+                    tempCtx.drawImage(
+                        canvas,
+                        0, sourceY, canvas.width, sourceH,
+                        0, 0, canvas.width, sourceH
+                    );
+
+                    const pageImgData = tempCanvas.toDataURL('image/png');
+                    const contentStartY = marginTop + headerH;
+
+                    pdf.addImage(
+                        pageImgData, 'PNG',
+                        marginLeft, contentStartY,
+                        imgWidth, heightForThisPage,
+                        undefined, 'FAST'
+                    );
+
+                    drawFooterAndPageNum();
+
+                    remainingHeight -= heightForThisPage;
+                    yOffset += heightForThisPage;
+
+                    if (remainingHeight > 0) {
+                        addNewPage();
+                    }
+                }
+            }
                                 } else {
                                     currentLine = testLine;
                                 }
