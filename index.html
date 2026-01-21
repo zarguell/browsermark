@@ -920,79 +920,76 @@ Try it out!"></textarea>
             // --- RENDER LOGIC ---
 
             if (appState.mode === 'document') {
-                // Raster PDF generation with professional HTML styling
-                const previewEl = document.getElementById('document-preview');
-
-                // Calculate scale to match PDF text size to web
-                const contentWidthPx = contentWidth * (72 / 25.4); // mm to px at 72dpi
-                const scale = contentWidthPx / previewEl.scrollWidth;
-
-                // Temporarily adjust styling for PDF capture
-                const originalPadding = previewEl.style.padding;
-                previewEl.style.padding = '0px'; // Remove padding for accurate capture
-
-                const canvas = await html2canvas(previewEl, {
-                    scale: scale,
-                    useCORS: true,
-                    logging: false,
-                    backgroundColor: '#ffffff',
-                    windowWidth: previewEl.scrollWidth,
-                    windowHeight: previewEl.scrollHeight
-                });
-
-                // Restore styling
-                previewEl.style.padding = originalPadding;
-
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = contentWidth;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-                // Calculate height available for content
+                // Vector PDF generation with professional typesetting and perfect resolution
+                const html = md.render(appState.markdown);
+                const lines = extractTextWithStyle(html);
                 const headerH = headerEnabled ? 10 : 0;
                 const footerH = footerEnabled ? 10 : 0;
                 const availableHeight = pageHeight - marginTop - marginBottom - headerH - footerH;
 
-                let remainingHeight = imgHeight;
-                let yOffset = 0;
-
+                let currentY = marginTop + headerH;
                 addNewPage();
 
-                while (remainingHeight > 0) {
-                    const heightForThisPage = Math.min(remainingHeight, availableHeight);
+                for (const line of lines) {
+                    const fontSize = line.style.fontSize || 12;
+                    const lineHeight = fontSize * 1.2;
+                    const indentX = marginLeft + (line.indent || 0) * 5;
 
-                    const sourceY = (yOffset / imgHeight) * canvas.height;
-                    const sourceH = (heightForThisPage / imgHeight) * canvas.height;
+                    if (line.isBreak) {
+                        currentY += lineHeight * 0.6; // Reduced spacing for breaks
+                    } else {
+                        pdf.setFontSize(fontSize);
+                        let fontName = 'helvetica';
+                        let fontStyle = 'normal';
+                        if (line.style.bold && line.style.italic) fontStyle = 'bolditalic';
+                        else if (line.style.bold) fontStyle = 'bold';
+                        else if (line.style.italic) fontStyle = 'italic';
+                        if (line.style.mono) fontName = 'courier';
+                        pdf.setFont(fontName, fontStyle);
 
-                    const tempCanvas = document.createElement('canvas');
-                    tempCanvas.width = canvas.width;
-                    tempCanvas.height = sourceH;
-                    const tempCtx = tempCanvas.getContext('2d');
+                        if (line.style.mono) {
+                            // Code blocks with background
+                            const textWidth = pdf.getTextWidth(line.text);
+                            pdf.setFillColor(245, 245, 245);
+                            pdf.rect(indentX - 2, currentY - fontSize * 0.8, textWidth + 4, fontSize * 1.2, 'F');
+                            pdf.setTextColor(0, 0, 0);
+                            pdf.text(line.text, indentX, currentY);
+                            currentY += lineHeight;
+                        } else {
+                            // Word wrap for regular text
+                            const words = line.text.split(/\s+/);
+                            let currentLine = '';
+                            let lineY = currentY;
+                            for (const word of words) {
+                                const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                                const testWidth = pdf.getTextWidth(testLine);
+                                if (testWidth > contentWidth - (line.indent || 0) * 5 && currentLine) {
+                                    pdf.text(currentLine, indentX, lineY);
+                                    lineY += lineHeight;
+                                    currentLine = word;
+                                    if (lineY + lineHeight > pageHeight - marginBottom - footerH) {
+                                        drawFooterAndPageNum();
+                                        addNewPage();
+                                        lineY = marginTop + headerH;
+                                    }
+                                } else {
+                                    currentLine = testLine;
+                                }
+                            }
+                            if (currentLine) {
+                                pdf.text(currentLine, indentX, lineY);
+                                currentY = lineY + lineHeight;
+                            }
+                        }
+                    }
 
-                    tempCtx.drawImage(
-                        canvas,
-                        0, sourceY, canvas.width, sourceH,
-                        0, 0, canvas.width, sourceH
-                    );
-
-                    const pageImgData = tempCanvas.toDataURL('image/png');
-                    const contentStartY = marginTop + headerH;
-
-                    pdf.addImage(
-                        pageImgData, 'PNG',
-                        marginLeft, contentStartY,
-                        imgWidth, heightForThisPage,
-                        undefined, 'FAST'
-                    );
-
-                    drawFooterAndPageNum();
-
-                    remainingHeight -= heightForThisPage;
-                    yOffset += heightForThisPage;
-
-                    if (remainingHeight > 0) {
+                    if (currentY > pageHeight - marginBottom - footerH) {
+                        drawFooterAndPageNum();
                         addNewPage();
+                        currentY = marginTop + headerH;
                     }
                 }
+                drawFooterAndPageNum();
             } else {
                 // --- SLIDES MODE ---
                 const slides = Array.from(document.querySelectorAll('.slide'));
