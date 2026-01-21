@@ -904,6 +904,7 @@ Try it out!"></textarea>
                 // Vector PDF generation for selectable text
                 const html = md.render(appState.markdown);
                 const lines = extractTextWithStyle(html);
+                console.log('Extracted lines:', lines);
                 const headerH = headerEnabled ? 10 : 0;
                 const footerH = footerEnabled ? 10 : 0;
                 const availableHeight = pageHeight - marginTop - marginBottom - headerH - footerH;
