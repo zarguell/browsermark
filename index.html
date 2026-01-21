@@ -754,40 +754,65 @@ Try it out!"></textarea>
             const div = document.createElement('div');
             div.innerHTML = html;
             const lines = [];
-            
-            function traverse(node, style = {}) {
+            let listIndex = { ol: 0 };
+
+            function traverse(node, style = {}, indent = 0) {
                 if (node.nodeType === 3) { // Text node
-                    const text = node.textContent.trim();
-                    if (text) {
-                        lines.push({ text, style: { ...style } });
+                    const text = node.textContent;
+                    if (text.trim()) {
+                        lines.push({ text: text, style: { ...style }, indent });
                     }
                 } else if (node.nodeType === 1) { // Element node
                     const tagName = node.tagName.toLowerCase();
                     let newStyle = { ...style };
-                    
+
                     if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
                         newStyle.fontSize = tagName === 'h1' ? 24 : tagName === 'h2' ? 18 : tagName === 'h3' ? 14 : 12;
                         newStyle.bold = true;
-                        lines.push({ text: '\n', style: newStyle, isBreak: true });
+                        lines.push({ text: '\n', style: newStyle, isBreak: true, indent });
                     }
-                    
+
                     if (tagName === 'strong' || tagName === 'b') newStyle.bold = true;
                     if (tagName === 'em' || tagName === 'i') newStyle.italic = true;
                     if (tagName === 'code') newStyle.mono = true;
-                    
-                    if (tagName === 'li') {
-                        lines.push({ text: '• ', style: newStyle });
-                    }
-                    
-                    if (['p', 'li', 'div', 'blockquote'].includes(tagName)) {
-                        Array.from(node.childNodes).forEach(child => traverse(child, newStyle));
-                        lines.push({ text: '\n', style: newStyle, isBreak: true });
+
+                    if (tagName === 'ul') {
+                        Array.from(node.childNodes).forEach(child => traverse(child, newStyle, indent));
+                    } else if (tagName === 'ol') {
+                        listIndex.ol = 0;
+                        Array.from(node.childNodes).forEach(child => traverse(child, newStyle, indent));
+                    } else if (tagName === 'li') {
+                        const parentTag = node.parentElement?.tagName.toLowerCase();
+                        let bullet = '• ';
+                        if (parentTag === 'ol') {
+                            listIndex.ol++;
+                            bullet = `${listIndex.ol}. `;
+                        }
+                        lines.push({ text: '  '.repeat(indent) + bullet, style: newStyle, indent });
+                        Array.from(node.childNodes).forEach(child => traverse(child, newStyle, indent + 1));
+                        lines.push({ text: '\n', style: newStyle, isBreak: true, indent });
+                    } else if (tagName === 'pre') {
+                        const codeText = node.textContent;
+                        const codeLines = codeText.split('\n');
+                        codeLines.forEach(line => {
+                            lines.push({ text: line, style: { ...newStyle, mono: true }, indent });
+                            lines.push({ text: '\n', style: { ...newStyle, mono: true }, isBreak: true, indent });
+                        });
+                    } else if (tagName === 'blockquote') {
+                        Array.from(node.childNodes).forEach(child => traverse(child, newStyle, indent + 1));
+                    } else if (tagName === 'table') {
+                        // Skip tables for now, or simple text
+                        lines.push({ text: '[Table]', style: newStyle, indent });
+                        lines.push({ text: '\n', style: newStyle, isBreak: true, indent });
+                    } else if (['p', 'div'].includes(tagName)) {
+                        Array.from(node.childNodes).forEach(child => traverse(child, newStyle, indent));
+                        lines.push({ text: '\n', style: newStyle, isBreak: true, indent });
                     } else {
-                        Array.from(node.childNodes).forEach(child => traverse(child, newStyle));
+                        Array.from(node.childNodes).forEach(child => traverse(child, newStyle, indent));
                     }
                 }
             }
-            
+
             traverse(div);
             return lines;
         }
@@ -882,12 +907,14 @@ Try it out!"></textarea>
                 const headerH = headerEnabled ? 10 : 0;
                 const footerH = footerEnabled ? 10 : 0;
                 const availableHeight = pageHeight - marginTop - marginBottom - headerH - footerH;
-                const lineHeight = 5;
 
                 let currentY = marginTop + headerH;
                 addNewPage();
 
                 for (const line of lines) {
+                    const lineHeight = (line.style.fontSize || 12) * 0.6;
+                    const indentX = marginLeft + (line.indent || 0) * 10; // 10mm per indent level
+
                     if (line.isBreak) {
                         currentY += lineHeight;
                     } else {
@@ -898,28 +925,34 @@ Try it out!"></textarea>
                         else if (line.style.italic) fontStyle = 'italic';
                         pdf.setFont(line.style.mono ? 'courier' : 'helvetica', fontStyle);
 
-                        // Simple word wrap (basic)
-                        const words = line.text.split(' ');
-                        let currentLine = '';
-                        for (const word of words) {
-                            const testLine = currentLine + (currentLine ? ' ' : '') + word;
-                            const testWidth = pdf.getTextWidth(testLine);
-                            if (testWidth > contentWidth && currentLine) {
-                                pdf.text(currentLine, marginLeft, currentY);
-                                currentY += lineHeight;
-                                currentLine = word;
-                                if (currentY > pageHeight - marginBottom - footerH) {
-                                    drawFooterAndPageNum();
-                                    addNewPage();
-                                    currentY = marginTop + headerH;
-                                }
-                            } else {
-                                currentLine = testLine;
-                            }
-                        }
-                        if (currentLine) {
-                            pdf.text(currentLine, marginLeft, currentY);
+                        if (line.style.mono) {
+                            // For code blocks, don't wrap, place as is
+                            pdf.text(line.text, indentX, currentY);
                             currentY += lineHeight;
+                        } else {
+                            // Simple word wrap
+                            const words = line.text.split(/\s+/);
+                            let currentLine = '';
+                            for (const word of words) {
+                                const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                                const testWidth = pdf.getTextWidth(testLine);
+                                if (testWidth > contentWidth - (line.indent || 0) * 10 && currentLine) {
+                                    pdf.text(currentLine, indentX, currentY);
+                                    currentY += lineHeight;
+                                    currentLine = word;
+                                    if (currentY > pageHeight - marginBottom - footerH) {
+                                        drawFooterAndPageNum();
+                                        addNewPage();
+                                        currentY = marginTop + headerH;
+                                    }
+                                } else {
+                                    currentLine = testLine;
+                                }
+                            }
+                            if (currentLine) {
+                                pdf.text(currentLine, indentX, currentY);
+                                currentY += lineHeight;
+                            }
                         }
                     }
 
