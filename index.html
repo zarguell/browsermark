@@ -877,6 +877,7 @@ Try it out!"></textarea>
 
             if (appState.mode === 'document') {
                 // Vector PDF generation for selectable text
+                const html = md.render(appState.markdown);
                 const lines = extractTextWithStyle(html);
                 const headerH = headerEnabled ? 10 : 0;
                 const footerH = footerEnabled ? 10 : 0;
