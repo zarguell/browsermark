@@ -76,6 +76,101 @@ textarea {
 #preview-content.word-headers h3 { color: #4472C4; }
 #preview-content.word-headers h4 { color: #8EA9DB; }
 
+/* Word-compatible styling for DOCX export */
+#preview-content.word-compatible {
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    max-width: 8.5in;
+    margin: 0 auto;
+}
+
+#preview-content.word-compatible h1 {
+    font-size: 28pt;
+    margin-top: 24pt;
+    margin-bottom: 12pt;
+    page-break-after: avoid;
+}
+
+#preview-content.word-compatible h2 {
+    font-size: 22pt;
+    margin-top: 18pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+}
+
+#preview-content.word-compatible h3 {
+    font-size: 16pt;
+    margin-top: 12pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+}
+
+#preview-content.word-compatible p {
+    margin-bottom: 12pt;
+    orphans: 2;
+    widows: 2;
+}
+
+#preview-content.word-compatible code {
+    font-family: 'Courier New', monospace;
+    background-color: #f5f5f5;
+    padding: 2pt 4pt;
+    border-radius: 3pt;
+}
+
+#preview-content.word-compatible pre {
+    background-color: #f5f5f5;
+    padding: 12pt;
+    border-radius: 6pt;
+    font-family: 'Courier New', monospace;
+    font-size: 10pt;
+    line-height: 1.4;
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+
+#preview-content.word-compatible blockquote {
+    border-left: 4pt solid #cccccc;
+    margin: 12pt 0;
+    padding-left: 12pt;
+    color: #666666;
+    font-style: italic;
+}
+
+#preview-content.word-compatible ul,
+#preview-content.word-compatible ol {
+    margin-bottom: 12pt;
+    padding-left: 36pt;
+}
+
+#preview-content.word-compatible li {
+    margin-bottom: 6pt;
+}
+
+#preview-content.word-compatible table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12pt 0;
+}
+
+#preview-content.word-compatible th,
+#preview-content.word-compatible td {
+    border: 1pt solid #000000;
+    padding: 6pt;
+    text-align: left;
+}
+
+#preview-content.word-compatible th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+#preview-content.word-compatible a {
+    color: #0563c1;
+    text-decoration: underline;
+}
+
 /* Font family options */
 #preview-content.font-calibri { font-family: 'Calibri', sans-serif; }
 #preview-content.font-times { font-family: 'Times New Roman', serif; }

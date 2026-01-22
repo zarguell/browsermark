@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('markdown-input');
     const previewContent = document.getElementById('preview-content');
     const exportBtn = document.getElementById('export-btn');
+    const exportDocxBtn = document.getElementById('export-docx-btn');
     const printBtn = document.getElementById('print-btn');
     const optionsToggle = document.getElementById('options-toggle');
     const optionsPanel = document.getElementById('options-panel');
@@ -15,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize PDF Generator
     const pdfGenerator = new PDFGenerator();
+
+    // Initialize DOCX Generator
+    const docxGenerator = new DOCXGenerator();
 
     // Default markdown text
     const defaultText = `# Welcome to Markdoc
@@ -87,6 +91,16 @@ function hello() {
 
         pdfGenerator.setOptions(headerText, footerText, includePageNumbers);
         pdfGenerator.generatePDF(previewContent);
+    });
+
+    // Export DOCX
+    exportDocxBtn.addEventListener('click', async () => {
+        const headerText = headerInput.value.trim();
+        const footerText = footerInput.value.trim();
+        const includePageNumbers = pageNumbersCheckbox.checked;
+
+        docxGenerator.setOptions(headerText, footerText, includePageNumbers);
+        await docxGenerator.generateDOCX(previewContent);
     });
 
     // Print PDF (text-searchable)
