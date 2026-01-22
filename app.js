@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const footerInput = document.getElementById('footer-input');
     const pageNumbersCheckbox = document.getElementById('page-numbers-checkbox');
     const linkUrlsCheckbox = document.getElementById('link-urls-checkbox');
+    const wordHeadersCheckbox = document.getElementById('word-headers-checkbox');
+    const fontSelect = document.getElementById('font-select');
 
     // Initialize PDF Generator
     const pdfGenerator = new PDFGenerator();
@@ -62,6 +64,21 @@ function hello() {
         document.documentElement.style.setProperty('--show-link-urls', showLinkUrls ? 'inline' : 'none');
     }
 
+    // Function to update styling options
+    function updateStylingOptions() {
+        const useWordHeaders = wordHeadersCheckbox.checked;
+        const selectedFont = fontSelect.value;
+
+        // Remove existing styling classes
+        previewContent.classList.remove('word-headers', 'font-default', 'font-calibri', 'font-times', 'font-arial');
+
+        // Add new styling classes
+        if (useWordHeaders) {
+            previewContent.classList.add('word-headers');
+        }
+        previewContent.classList.add(`font-${selectedFont}`);
+    }
+
     // Export PDF with options
     exportBtn.addEventListener('click', () => {
         const headerText = headerInput.value.trim();
@@ -84,10 +101,15 @@ function hello() {
     pageNumbersCheckbox.addEventListener('change', updatePrintOptions);
     linkUrlsCheckbox.addEventListener('change', updatePrintOptions);
 
+    // Update styling options when inputs change
+    wordHeadersCheckbox.addEventListener('change', updateStylingOptions);
+    fontSelect.addEventListener('change', updateStylingOptions);
+
     // Input event listener
     input.addEventListener('input', updatePreview);
 
     // Initial render
     updatePreview();
     updatePrintOptions();
+    updateStylingOptions();
 });

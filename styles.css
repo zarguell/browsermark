@@ -70,6 +70,16 @@ textarea {
 #preview-content blockquote { border-left: 4px solid #dfe2e5; margin: 0; padding: 0 1em; color: #6a737d; }
 #preview-content ul, #preview-content ol { padding-left: 2em; margin-bottom: 16px; }
 
+/* Word-style header colors */
+#preview-content.word-headers h1 { color: #2E75B6; }
+#preview-content.word-headers h2 { color: #5B9BD5; }
+
+/* Font family options */
+#preview-content.font-calibri { font-family: 'Calibri', sans-serif; }
+#preview-content.font-times { font-family: 'Times New Roman', serif; }
+#preview-content.font-arial { font-family: Arial, sans-serif; }
+#preview-content.font-default { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
 button {
     background: #007bff;
     color: white;
