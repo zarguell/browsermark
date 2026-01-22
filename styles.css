@@ -181,6 +181,15 @@ button:hover { background: #0056b3; }
         }
     }
 
+    /* Show link URLs when option is enabled */
+    #preview-content a::after {
+        content: " [" attr(href) "]";
+        display: var(--show-link-urls);
+        color: #666;
+        font-size: 0.9em;
+        font-style: italic;
+    }
+
     /* Ensure text is selectable */
     #preview-content * {
         -webkit-print-color-adjust: exact;

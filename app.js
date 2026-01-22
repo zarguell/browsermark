@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerInput = document.getElementById('header-input');
     const footerInput = document.getElementById('footer-input');
     const pageNumbersCheckbox = document.getElementById('page-numbers-checkbox');
+    const linkUrlsCheckbox = document.getElementById('link-urls-checkbox');
 
     // Initialize PDF Generator
     const pdfGenerator = new PDFGenerator();
@@ -53,10 +54,12 @@ function hello() {
         const headerText = headerInput.value.trim();
         const footerText = footerInput.value.trim();
         const includePageNumbers = pageNumbersCheckbox.checked;
+        const showLinkUrls = linkUrlsCheckbox.checked;
 
         document.documentElement.style.setProperty('--header-text', `"${headerText}"`);
         document.documentElement.style.setProperty('--footer-text', `"${footerText}"`);
         document.documentElement.style.setProperty('--page-numbers', includePageNumbers ? '' : 'none');
+        document.documentElement.style.setProperty('--show-link-urls', showLinkUrls ? 'inline' : 'none');
     }
 
     // Export PDF with options
@@ -79,6 +82,7 @@ function hello() {
     headerInput.addEventListener('input', updatePrintOptions);
     footerInput.addEventListener('input', updatePrintOptions);
     pageNumbersCheckbox.addEventListener('change', updatePrintOptions);
+    linkUrlsCheckbox.addEventListener('change', updatePrintOptions);
 
     // Input event listener
     input.addEventListener('input', updatePreview);
