@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('markdown-input');
     const previewContent = document.getElementById('preview-content');
     const exportBtn = document.getElementById('export-btn');
+    const printBtn = document.getElementById('print-btn');
     const optionsToggle = document.getElementById('options-toggle');
     const optionsPanel = document.getElementById('options-panel');
     const headerInput = document.getElementById('header-input');
@@ -47,6 +48,17 @@ function hello() {
         optionsToggle.textContent = optionsPanel.classList.contains('collapsed') ? 'Show Options' : 'Hide Options';
     });
 
+    // Function to update print CSS variables
+    function updatePrintOptions() {
+        const headerText = headerInput.value.trim();
+        const footerText = footerInput.value.trim();
+        const includePageNumbers = pageNumbersCheckbox.checked;
+
+        document.documentElement.style.setProperty('--header-text', `"${headerText}"`);
+        document.documentElement.style.setProperty('--footer-text', `"${footerText}"`);
+        document.documentElement.style.setProperty('--page-numbers', includePageNumbers ? '' : 'none');
+    }
+
     // Export PDF with options
     exportBtn.addEventListener('click', () => {
         const headerText = headerInput.value.trim();
@@ -57,9 +69,21 @@ function hello() {
         pdfGenerator.generatePDF(previewContent);
     });
 
+    // Print PDF (text-searchable)
+    printBtn.addEventListener('click', () => {
+        updatePrintOptions();
+        window.print();
+    });
+
+    // Update print options when inputs change
+    headerInput.addEventListener('input', updatePrintOptions);
+    footerInput.addEventListener('input', updatePrintOptions);
+    pageNumbersCheckbox.addEventListener('change', updatePrintOptions);
+
     // Input event listener
     input.addEventListener('input', updatePreview);
 
     // Initial render
     updatePreview();
+    updatePrintOptions();
 });

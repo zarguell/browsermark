@@ -31,6 +31,11 @@ body {
     justify-content: space-between;
     align-items: center;
 }
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
 textarea {
     flex: 1;
     resize: none;
@@ -110,4 +115,75 @@ button:hover { background: #0056b3; }
 }
 .option-group input[type="checkbox"] {
     margin-right: 5px;
+}
+
+/* Print styles for text-searchable PDFs */
+@media print {
+    body {
+        background: white;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        display: block;
+        padding: 0;
+        gap: 0;
+    }
+
+    /* Hide UI elements */
+    .panel:first-child,
+    .header,
+    .options-toggle,
+    .options-panel {
+        display: none !important;
+    }
+
+    /* Show only preview panel */
+    .panel:nth-child(2) {
+        box-shadow: none;
+        border-radius: 0;
+        flex: none;
+    }
+
+    #preview-container {
+        padding: 0;
+        overflow: visible;
+    }
+
+    #preview-content {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Page setup with headers/footers */
+    @page {
+        margin: 1in 0.75in 1.25in 0.75in; /* top right bottom left */
+        size: letter;
+
+        @top-center {
+            content: var(--header-text, "");
+            font-size: 10pt;
+            font-weight: normal;
+        }
+
+        @bottom-left {
+            content: var(--footer-text, "");
+            font-size: 10pt;
+            font-weight: normal;
+        }
+
+        @bottom-right {
+            content: var(--page-numbers, "") "Page " counter(page);
+            font-size: 10pt;
+            font-weight: normal;
+        }
+    }
+
+    /* Ensure text is selectable */
+    #preview-content * {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
 }
