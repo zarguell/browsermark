@@ -5,6 +5,33 @@ body {
     margin: 0;
     background: #f0f2f5;
 }
+
+/* Help Button */
+.help-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background 0.2s;
+}
+.help-btn:hover {
+    background: #0056b3;
+}
+
+/* Help Modal */
+#help-modal {
+    display: none;
+}
 .container {
     display: flex;
     width: 100%;

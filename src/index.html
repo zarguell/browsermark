@@ -8,6 +8,9 @@
 </head>
 <body>
 
+<!-- Help Button -->
+<button id="help-btn" class="help-btn" title="Help">?</button>
+
 <div class="container">
     <!-- Input Panel -->
     <div class="panel">
@@ -75,6 +78,74 @@
         <div id="preview-container">
             <!-- Actual content target for PDF generation -->
             <div id="preview-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div id="help-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>BrowserMark Help</h3>
+            <button class="modal-close" id="help-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <h4>What is BrowserMark?</h4>
+            <p>BrowserMark is a simple, browser-based markdown to document converter that generates high-quality PDF, DOCX, and MHTML files directly in your browser.</p>
+
+            <h4>Features</h4>
+            <ul>
+                <li><strong>Live Preview</strong>: See your markdown rendered in real-time as you type</li>
+                <li><strong>Multiple Export Formats</strong>:
+                    <ul>
+                        <li>PDF (with customizable headers, footers, and page numbers)</li>
+                        <li>DOCX (Microsoft Word compatible)</li>
+                        <li>MHTML (single-file web archive)</li>
+                    </ul>
+                </li>
+                <li><strong>Custom Options</strong>:
+                    <ul>
+                        <li>Header and footer text</li>
+                        <li>Page numbering</li>
+                        <li>Link URL display (for print PDFs)</li>
+                        <li>Word-style header colors</li>
+                        <li>Font family selection</li>
+                    </ul>
+                </li>
+                <li><strong>Custom Filenames</strong>: Set custom filenames for your exports</li>
+                <li><strong>Auto-Filename from Headers</strong>: Automatically use the first heading as the filename</li>
+            </ul>
+
+            <h4>Usage</h4>
+            <ol>
+                <li>Type or paste your markdown in the input panel</li>
+                <li>Use the options panel to customize headers, footers, and other settings</li>
+                <li>Set a custom filename if desired (or enable auto-filename from first header)</li>
+                <li>Click one of the export buttons to download your document</li>
+            </ol>
+
+            <h4>Basic Markdown Example</h4>
+            <pre><code># My Document Title
+
+This is a paragraph with **bold** and *italic* text.
+
+## Features
+
+- Bullet points
+- [Links](https://example.com)
+- `Code blocks`
+
+> Blockquotes work too</code></pre>
+
+            <h4>Export Options</h4>
+            <ul>
+                <li><strong>Export PDF</strong>: Generates a PDF with your custom headers, footers, and page numbers</li>
+                <li><strong>Export DOCX (BETA)</strong>: Creates a Microsoft Word-compatible document</li>
+                <li><strong>Export MHTML</strong>: Single-file web archive format</li>
+                <li><strong>Print PDF</strong>: Opens browser print dialog for text-searchable PDFs</li>
+            </ul>
+
+            <p><strong>Source Code:</strong> <a href="https://github.com/zarguell/browsermark" target="_blank">https://github.com/zarguell/browsermark</a></p>
         </div>
     </div>
 </div>

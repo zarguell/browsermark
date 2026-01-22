@@ -75,6 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fontSelect = document.getElementById('font-select');
     const filenameInput = document.getElementById('filename-input');
     const autoFilenameCheckbox = document.getElementById('auto-filename-checkbox');
+    const helpBtn = document.getElementById('help-btn');
+    const helpModal = document.getElementById('help-modal');
+    const helpClose = document.getElementById('help-close');
 
     // Initialize PDF Generator
     const pdfGenerator = new PDFGenerator();
@@ -214,6 +217,24 @@ function hello() {
     // Update styling options when inputs change
     wordHeadersCheckbox.addEventListener('change', updateStylingOptions);
     fontSelect.addEventListener('change', updateStylingOptions);
+
+    // Help modal event listeners
+    if (helpBtn && helpModal && helpClose) {
+        helpBtn.addEventListener('click', () => {
+            helpModal.style.display = 'block';
+        });
+
+        helpClose.addEventListener('click', () => {
+            helpModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) {
+                helpModal.style.display = 'none';
+            }
+        });
+    }
 
     // Input event listener
     input.addEventListener('input', updatePreview);
