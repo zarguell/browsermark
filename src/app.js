@@ -25,9 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mhtmlGenerator = new MHTMLGenerator();
 
     // Default markdown text
-    const defaultText = `# Welcome to Markdoc
+    const defaultText = `# Welcome to browsermark
 
-Markdoc is a simple markdown to PDF converter that generates high-quality documents.
+browsermark is a simple markdown to PDF converter that generates high-quality documents.
 
 ## Features
 
@@ -39,7 +39,7 @@ Markdoc is a simple markdown to PDF converter that generates high-quality docume
 \`\`\`javascript
 // Example code block
 function hello() {
-    console.log('Hello, Markdoc!');
+    console.log('Hello, browsermark!');
 }
 \`\`\`
 

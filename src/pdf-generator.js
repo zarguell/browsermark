@@ -15,7 +15,7 @@ class PDFGenerator {
     generatePDF(element) {
         const opt = {
             margin: [0.5, 0.4, 0.8, 0.4], // top, right, bottom, left - increased top to prevent clipping on page breaks
-            filename: 'markdoc-document.pdf',
+            filename: 'browsermark-document.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
@@ -65,7 +65,7 @@ class PDFGenerator {
                     }
                 }
 
-                pdf.save('markdoc-document.pdf');
+                pdf.save('browsermark-document.pdf');
             })
             .catch((err) => {
                 console.error('PDF Generation Error:', err);

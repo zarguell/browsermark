@@ -34,7 +34,7 @@ class MHTMLGenerator {
         };
     }
 
-    async generateMHTML(element, filename = 'markdoc-document.mht') {
+    async generateMHTML(element, filename = 'browsermark-document.mht') {
         try {
             const container = document.createElement('div');
             container.innerHTML = element.innerHTML;

@@ -45,7 +45,7 @@ class DOCXGenerator {
         this.includePageNumbers = includePageNumbers;
     }
 
-    async generateDOCX(element, filename = 'markdoc-document.docx') {
+    async generateDOCX(element, filename = 'browsermark-document.docx') {
         try {
             const container = document.createElement('div');
             container.innerHTML = element.innerHTML;
