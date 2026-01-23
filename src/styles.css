@@ -460,7 +460,8 @@ button:hover { background: #0056b3; }
     .panel:first-child,
     .header,
     .options-toggle,
-    .options-panel {
+    .options-panel,
+    .help-btn {
         display: none !important;
     }
 
