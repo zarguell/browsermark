@@ -1,6 +1,9 @@
 // Import npm dependencies
 import { marked } from 'marked';
 
+// Import styles
+import './styles.css';
+
 // Import application modules
 import './snippet-library.js';
 
