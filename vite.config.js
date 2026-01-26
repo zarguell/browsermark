@@ -5,9 +5,6 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
-      input: {
-        main: './src/index.html'
-      },
       output: {
         manualChunks: {
           'marked': ['marked'],
