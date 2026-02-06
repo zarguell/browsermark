@@ -11,10 +11,12 @@ class PNGGenerator {
         // Clone the element to avoid modifying the original
         const clone = element.cloneNode(true);
         
-        // Apply some styles to ensure proper rendering
-        clone.style.maxWidth = '100%';
+        // Apply styles to ensure proper rendering and constrain width
+        clone.style.maxWidth = '8.5in'; // Standard Word document width
+        clone.style.width = '8.5in';
         clone.style.padding = '40px';
         clone.style.background = '#fff';
+        clone.style.margin = '0 auto';
         
         // Temporarily add to DOM for proper rendering
         clone.style.position = 'absolute';
