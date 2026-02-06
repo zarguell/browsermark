@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const exportBtn = document.getElementById('export-btn');
     const exportDocxBtn = document.getElementById('export-docx-btn');
     const exportMhtmlBtn = document.getElementById('export-mhtml-btn');
+    const exportPngBtn = document.getElementById('export-png-btn');
     const printBtn = document.getElementById('print-btn');
     const optionsToggle = document.getElementById('options-toggle');
     const optionsPanel = document.getElementById('options-panel');
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let pdfGenerator = null;
     let docxGenerator = null;
     let mhtmlGenerator = null;
+    let pngGenerator = null;
 
     // Initialize Snippet Library
     window.snippetLibrary = new SnippetLibrary();
@@ -380,6 +382,28 @@ graph TD
         } finally {
             exportMhtmlBtn.textContent = 'Export MHTML';
             exportMhtmlBtn.disabled = false;
+        }
+    });
+
+    // Export PNG - Lazy load on click
+    exportPngBtn.addEventListener('click', async () => {
+        try {
+            exportPngBtn.textContent = 'Generating PNG...';
+            exportPngBtn.disabled = true;
+
+            if (!pngGenerator) {
+                const module = await import('./png-generator.js');
+                pngGenerator = new module.PNGGenerator();
+            }
+
+            const filename = getEffectiveFilename('.png');
+            pngGenerator.generatePNG(previewContent, filename);
+        } catch (error) {
+            console.error('Failed to load PNG generator:', error);
+            alert('Failed to load PNG export functionality. Please refresh and try again.');
+        } finally {
+            exportPngBtn.textContent = 'Export PNG';
+            exportPngBtn.disabled = false;
         }
     });
 
