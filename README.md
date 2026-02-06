@@ -127,6 +127,32 @@ To run locally for development:
 npx wrangler dev
 ```
 
+### Build Modes
+
+This project supports two build modes:
+
+1. **Regular Build** (default): Creates multiple optimized files for web hosting
+   ```bash
+   npm run build
+   ```
+
+2. **Single File Build**: Creates one self-contained HTML file for easy distribution
+   ```bash
+   BUILD_SINGLE_FILE=true npm run build
+   ```
+
+### Desktop Application
+
+This project can also be built as a desktop application using Tauri:
+
+```bash
+# Development mode
+npm run tauri:dev
+
+# Production build
+npm run tauri:build
+```
+
 ## Architecture
 
 - **Frontend**: Pure HTML/CSS/JavaScript with no build process required
