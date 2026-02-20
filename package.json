@@ -31,7 +31,7 @@
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.14.0",
     "marked": "^17.0.1",
-    "mermaid": "^11.12.2",
+    "mermaid": "^11.12.3",
     "nomnoml": "^1.7.0",
     "pikchr-js": "^0.1.1",
     "shiki": "^3.21.0"
