@@ -22,7 +22,9 @@ export class MermaidRenderer extends DiagramRenderer {
       this.mermaid = mermaid;
       this.mermaid.initialize({
         startOnLoad: false,
-        theme: 'default'
+        theme: 'default',
+        layout: 'dagre',
+        look: 'classic'
       });
 
       this.initialized = true;

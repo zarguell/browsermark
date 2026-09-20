@@ -47,7 +47,9 @@ describe('MermaidRenderer', () => {
       // Check that mermaid was initialized
       expect(mockMermaid.initialize).toHaveBeenCalledWith({
         startOnLoad: false,
-        theme: 'default'
+        theme: 'default',
+        layout: 'dagre',
+        look: 'classic'
       });
     });
 
