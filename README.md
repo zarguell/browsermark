@@ -20,6 +20,7 @@ Try it out at: [https://browsermark.useast01.workers.dev/](https://browsermark.u
   - PDF (with customizable headers, footers, and page numbers)
   - DOCX (Microsoft Word compatible)
   - MHTML (single-file web archive)
+  - Copy Rich Text (formatted paste for Word, Google Docs, Apple Notes)
 - **Custom Options**:
   - Header and footer text
   - Page numbering

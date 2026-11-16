@@ -6,6 +6,7 @@ import './styles.css';
 
 // Import application modules
 import './snippet-library.js';
+import { copyRichText } from './utils/richTextClipboard.js';
 
 // Import diagram rendering system
 import { DiagramManager } from './DiagramManager.js';
@@ -100,6 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const helpBtn = document.getElementById('help-btn');
     const helpModal = document.getElementById('help-modal');
     const helpClose = document.getElementById('help-close');
+    const appContainer = document.querySelector('.container');
+    const mobileInputBtn = document.getElementById('mobile-input-btn');
+    const mobilePreviewBtn = document.getElementById('mobile-preview-btn');
+    const copyRichTextBtn = document.getElementById('copy-rich-text-btn');
 
     // Generator caches for lazy loading
     let pdfGenerator = null;
@@ -411,6 +416,31 @@ graph TD
     printBtn.addEventListener('click', () => {
         updatePrintOptions();
         window.print();
+    });
+
+    // Copy rendered content as rich text for word processors and note apps
+    let copyLabelTimer;
+    copyRichTextBtn.addEventListener('click', async () => {
+        clearTimeout(copyLabelTimer);
+        try {
+            copyRichTextBtn.disabled = true;
+            copyRichTextBtn.textContent = 'Copying...';
+
+            const html = previewContent.innerHTML;
+            const plainText = previewContent.innerText || previewContent.textContent;
+            await copyRichText(html, plainText);
+
+            copyRichTextBtn.textContent = 'Copied!';
+            copyLabelTimer = setTimeout(() => {
+                copyRichTextBtn.textContent = 'Copy Rich Text';
+            }, 1500);
+        } catch (error) {
+            console.error('Failed to copy rich text:', error);
+            alert('Failed to copy rich text. Please try again.');
+            copyRichTextBtn.textContent = 'Copy Rich Text';
+        } finally {
+            copyRichTextBtn.disabled = false;
+        }
     });
 
     // Update print options when inputs change
