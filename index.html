@@ -10,15 +10,15 @@
 <!-- Help Button -->
 <button id="help-btn" class="help-btn" title="Help">?</button>
 
-<div class="container">
+<div class="container" data-mobile-view="input">
     <!-- Input Panel -->
-    <div class="panel">
+    <div class="panel" id="input-panel">
         <div class="header">BrowserMark Input</div>
         <textarea id="markdown-input" placeholder="Type your markdown here..."></textarea>
     </div>
 
     <!-- Preview Panel -->
-    <div class="panel">
+    <div class="panel" id="preview-panel">
         <div class="header">
             Browsermark Preview
             <div class="button-group">
@@ -86,6 +86,12 @@
             <div id="preview-content"></div>
         </div>
     </div>
+    <!-- Mobile panel switcher -->
+    <div class="mobile-view-switch" role="group" aria-label="Active panel">
+        <button type="button" id="mobile-input-btn" class="active" aria-pressed="true">Input</button>
+        <button type="button" id="mobile-preview-btn" aria-pressed="false">Preview</button>
+    </div>
+
 </div>
 
 <!-- Help Modal -->

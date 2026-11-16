@@ -267,6 +267,19 @@ graph TD
         optionsToggle.textContent = optionsPanel.classList.contains('collapsed') ? 'Show Options' : 'Hide Options';
     });
 
+    // Mobile layout: switch focus between the input and preview panels
+    function setMobileView(view) {
+        const inputActive = view === 'input';
+        appContainer.dataset.mobileView = view;
+        mobileInputBtn.classList.toggle('active', inputActive);
+        mobilePreviewBtn.classList.toggle('active', !inputActive);
+        mobileInputBtn.setAttribute('aria-pressed', String(inputActive));
+        mobilePreviewBtn.setAttribute('aria-pressed', String(!inputActive));
+    }
+
+    mobileInputBtn.addEventListener('click', () => setMobileView('input'));
+    mobilePreviewBtn.addEventListener('click', () => setMobileView('preview'));
+
     // Function to update print CSS variables
     function updatePrintOptions() {
         const headerText = headerInput.value.trim();

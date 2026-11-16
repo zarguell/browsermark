@@ -44,6 +44,11 @@ body {
     gap: 20px;
     box-sizing: border-box;
 }
+
+/* Mobile panel switcher (only shown on small screens) */
+.mobile-view-switch {
+    display: none;
+}
 .panel {
     flex: 1;
     display: flex;
@@ -716,4 +721,64 @@ button:hover { background: #0056b3; }
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* Mobile layout: focus one panel at a time */
+@media screen and (max-width: 768px) {
+    body {
+        height: 100dvh;
+    }
+    .container {
+        flex-direction: column;
+        padding: 12px;
+        gap: 12px;
+    }
+    .mobile-view-switch {
+        order: -1;
+        display: flex;
+        flex-shrink: 0;
+        padding: 4px;
+        background: #e4e7ec;
+        border-radius: 8px;
+    }
+    .mobile-view-switch button {
+        flex: 1;
+        background: transparent;
+        color: #495057;
+        padding: 10px 12px;
+    }
+    .mobile-view-switch button.active {
+        background: #007bff;
+        color: white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .container[data-mobile-view="input"] #preview-panel,
+    .container[data-mobile-view="preview"] #input-panel {
+        display: none;
+    }
+    .panel {
+        min-height: 0;
+    }
+    .header {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px;
+    }
+    .button-group {
+        gap: 6px;
+    }
+    .button-group button {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    .options-panel {
+        max-height: 35vh;
+        overflow-y: auto;
+    }
+    textarea {
+        padding: 16px;
+    }
+    #preview-container {
+        padding: 20px;
+    }
 }
