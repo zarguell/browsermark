@@ -111,7 +111,19 @@ describe('NomnomlRenderer', () => {
       const code = '[A]->[B]';
       const svg = await renderer.render(code);
 
-      expect(svg.querySelector('[style]')).toBeTruthy();
+      // getComputedStyle() only resolves values for nodes that are in a
+      // rendered document (jsdom >= 31 follows the spec here and returns an
+      // empty declaration for detached nodes), so exercise the style-copying
+      // step on an attached node - that is the situation html2canvas sees.
+      document.body.appendChild(svg);
+      try {
+        renderer.ensureInlineStyles(svg);
+
+        expect(svg.querySelector('[style]')).toBeTruthy();
+        expect(svg.querySelector('[style]').getAttribute('style')).toMatch(/fill:/);
+      } finally {
+        svg.remove();
+      }
     });
 
     it('should auto-initialize if not already initialized', async () => {
